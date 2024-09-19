@@ -3,7 +3,7 @@ const DBconfig = {
   password: "BarDatatest$789", //sql user password
   //server: "10.0.0.186\\COMBILL", // if it does not work try- localhost
   server: "10.0.25.106", // if it does not work try- localhost
-  database: "QuickRecc",
+  database: "QuickRec",
 
   pool: {
     max: 10,
