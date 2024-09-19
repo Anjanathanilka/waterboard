@@ -94,7 +94,7 @@ app.use("/common", commonRoutes);
 app.use("/report", reportRoutes);
 
 /* SERVER CONFIG */
-var port = process.env.PORT || 8081;
+var port = process.env.PORT || 8080;
 // var io;
 console.log(port);
 appPool
