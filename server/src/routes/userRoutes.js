@@ -1,21 +1,10 @@
 import express from "express";
-import { signup, signin} from "../controllers/userController.js";
-
-// import auth from "../middleware/auth.js";
+import { signup, signin, adminSignin } from "../controllers/userController.js";
 
 const router = express.Router();
 
-//router.get("/signin", signin);
 router.post("/signin", signin);
 router.post("/signup", signup);
-
-// router.post("/menus", getMenu);
+router.post("/admin/signin", adminSignin);  // New admin signin route
 
 export default router;
-
-
-
-
-
-
-

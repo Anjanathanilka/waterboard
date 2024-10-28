@@ -17,6 +17,13 @@ API.interceptors.request.use((req) => {
   }
   return req;
 });
+// ... existing code ...
+
+const adminSignin = async (loginData) => {
+  const response = await API.post("user/admin/signin", loginData, config);
+  return response.data;
+};
+
 
 const signin = async (loginData) => {
   const response = await API.post("user/signin", loginData, config);
@@ -49,4 +56,4 @@ const getVacanciesBySearch = async (searchQuery) => {
   return response.data.data;
 };
 
-export { getVacancies, saveBasicDetails, signin, signup, getVacanciesBySearch };
+export { getVacancies, saveBasicDetails, signin, signup, getVacanciesBySearch, adminSignin };
