@@ -79,3 +79,54 @@ export const signin = async (req, res) => {
     console.log(error);
   }
 };
+
+// ... existing code ...
+
+export const adminSignin = async (req, res) => {
+  const { userName, password } = req.body;
+
+  try {
+    // Call the Water Board HRM API
+    const response = await fetch('https://billing.waterboard.lk/hrm/Authenticate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userName,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(401).json({ message: "Invalid admin credentials" });
+    }
+
+    // Create admin token with special privileges
+    const token = jwt.sign(
+      {
+        userName,
+        isAdmin: true,
+        // Add any additional admin data from the HRM API response
+      },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: 1200,
+      }
+    );
+
+    res.status(200).json({ 
+      result: {
+        UserName: userName,
+        isAdmin: true,
+        // Add any additional admin data you want to return
+      }, 
+      token 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+    console.log(error);
+  }
+};
