@@ -60,7 +60,7 @@ const VacancyList = () => {
   };
 
   const searchVacancy = async () => {
-    if (search.trim()) {
+    if (search.searchQuery.trim()) {
     } else {
       navigate("/");
     }

@@ -108,7 +108,7 @@ export const addEduDetails = async (req, res) => {
   }
 };
 
-export const deleteEduDetails = async (req, res) => {
+export  const deleteEduDetails = async (req, res) => {
   try {
     const data = await ApplicationDAO.deleteEduDetails(req.query);
     res.status(200).json({ data });

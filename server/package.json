@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "type": "module",
+  "type": "module",
   "scripts": {
     "start": "nodemon --delay 500ms index.js"
   },
@@ -11,6 +11,7 @@
   "author": "Space_xiii",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

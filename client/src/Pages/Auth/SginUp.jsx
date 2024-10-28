@@ -35,11 +35,19 @@ const initState = {
 const SignUp = () => {
   const theme = useTheme();
   const [boardEmpCheck, setBoardEmpCheck] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [userData, setUserData] = useState(initState);
   const [error, setError] = useState("");
 
+
+
+  const handleShowPassowrd = () => {
+    setShowPassword(!showPassword);
+  };
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
 
     try {
       const data = await api.signup(userData);
@@ -120,7 +128,8 @@ const SignUp = () => {
               label="Password *"
               handleChange={handleChange}
               required
-              type="password"
+              type={showPassword ? "text" : "password"}
+              handleShowPassword={handleShowPassowrd}
             />
             <Input
               name="confirmPassword"
