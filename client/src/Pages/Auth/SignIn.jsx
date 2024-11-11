@@ -3,11 +3,9 @@ import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import ButtonComp from "../../components/ButtonComp";
 import Input from "../../components/Input";
-// import { GoogleLogin } from "react-google-login";
 import { useDispatch } from "react-redux";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as api from "../../api/";
-import { useGetMasterDataQuery } from "../../state/api";
 import { getUserDataOnFailiure, getUserDataOnSuccess } from "../../state/Auth";
 
 const initState = { userName: "", password: "" };
@@ -18,17 +16,10 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState(initState);
   const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false); // Track if it's admin login
   const navigate = useNavigate();
-  const [isNavbar, setIsNavBar] = useOutletContext();
 
-  const { data: masterData, isLoading: masterDataLoading } =
-    useGetMasterDataQuery() || {};
-
-  useEffect(() => {
-    setIsNavBar(false);
-  }, []);
-
-  const handleShowPassowrd = () => {
+  const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
@@ -40,8 +31,20 @@ const SignIn = () => {
     e.preventDefault();
 
     try {
-      const data = await api.signin(loginData);
+      let data;
+
+      // Call the appropriate API based on isAdmin flag
+      if (isAdmin) {
+        // Admin signin
+        data = await api.adminSignin(loginData);
+      } else {
+        // Regular user signin
+        data = await api.signin(loginData);
+      }
+
       const successData = { result: data.result, token: data.token };
+
+      // Save token and user data in localStorage
       localStorage.setItem(
         "profile",
         JSON.stringify({
@@ -49,9 +52,12 @@ const SignIn = () => {
           userData: data.result,
         })
       );
+
+      // Dispatch success action
       dispatch(getUserDataOnSuccess(successData));
-      navigate("/home");
+      navigate("/home");  // Navigate to the appropriate page (admin or user dashboard)
     } catch (error) {
+      // Handle errors (invalid credentials, server error, etc.)
       dispatch(getUserDataOnFailiure(error.response.data));
       setError(error.response.data);
       setTimeout(() => {
@@ -60,27 +66,6 @@ const SignIn = () => {
     }
   };
 
-  const googleSuccess = async (res) => {
-    // const result = res?.profileObj;
-    const token = res?.credential;
-    const successData = { token };
-    try {
-      localStorage.setItem(
-        "profile",
-        JSON.stringify({
-          token,
-        })
-      );
-      dispatch(getUserDataOnSuccess(successData));
-      navigate("/home");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const googleError = (err) => {
-    console.log("Google Sign In was unsuccessful. Try again later");
-    console.log(err);
-  };
   return (
     <Container component="main" maxWidth="xs">
       <Paper
@@ -102,7 +87,7 @@ const SignIn = () => {
           <Grid container spacing={2} sx={{ mt: "1rem" }}>
             <Input
               name="userName"
-              label="Email Address/ Employee No *"
+              label={isAdmin ? "Employee No *" : "Email *"}
               handleChange={handleChange}
               required
             />
@@ -112,42 +97,32 @@ const SignIn = () => {
               handleChange={handleChange}
               required
               type={showPassword ? "text" : "password"}
-              handleShowPassword={handleShowPassowrd}
+              handleShowPassword={handleShowPassword}
             />
             <Grid item xs={12}>
               <ButtonComp type="submit" fullWidth variant="contained">
                 Sign In
               </ButtonComp>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ justifyContent: "center", textAlign: "center" }}
-            >
+
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
               <Typography sx={{ fontSize: "0.8rem" }}>
-                -- or Sign In with --
+                -- or --
               </Typography>
             </Grid>
-            {/* <Grid item xs={12}>
-              <GoogleLogin
-                onSuccess={googleSuccess}
-                onFailure={googleError}
-                // cookiePolicy="single_host_origin"
-              />
-            </Grid> */}
-          </Grid>
-          <Grid container sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Grid item>
-              <Typography
-                sx={{ fontSize: "0.8rem", mt: "1rem", cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/signUp");
-                }}
+
+            {/* Button to toggle between admin/user signin */}
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <ButtonComp
+                fullWidth
+                variant="outlined"
+                onClick={() => setIsAdmin(!isAdmin)} // Toggle between admin and user login
               >
-                Sign up to create a new account
-              </Typography>
+                {isAdmin ? "Sign in with Email" : "Sign in as Employee"}
+              </ButtonComp>
             </Grid>
           </Grid>
+
           {error && (
             <Typography
               sx={{

@@ -80,7 +80,6 @@ export const signin = async (req, res) => {
   }
 };
 
-// ... existing code ...
 
 export const adminSignin = async (req, res) => {
   const { userName, password } = req.body;
@@ -101,7 +100,7 @@ export const adminSignin = async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(401).json({ message: "Invalid admin credentials" });
+      return res.status(401).json({ message: "Invalid Employee Credentials" });
     }
 
     // Create admin token with special privileges
